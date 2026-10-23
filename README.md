@@ -12,6 +12,10 @@ A studio organizer for architecture students.
   - **Review**: instant built-in review of what's missing and how to improve, plus optional AI feedback
   - **Precedents**: curated precedent library and trusted inspiration sites
 
+- **Themes**: light, dark and system (follows the device), switchable on every page
+
+See [ROADMAP.md](ROADMAP.md) for the phased plan.
+
 Everything a student adds is saved in their own browser (text in `localStorage`, images in IndexedDB). There is no account or database yet; *Settings & data* can download and restore a backup.
 
 ## Deploy to Netlify
@@ -41,6 +45,7 @@ Then open <http://localhost:3000/app/>. (The AI feedback button needs `netlify d
 ## Files
 
 - `index.html`, `styles.css`, `main.js` — landing page
+- `theme.js` — light / dark / system theme switch shared by both pages
 - `app/` — the app (plain HTML/CSS/JS modules, no build step)
   - `app/js/views/` — one file per screen
   - `app/js/data/` — checklist template and precedent library
