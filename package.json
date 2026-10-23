@@ -1,0 +1,10 @@
+{
+  "name": "atelier",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Studio organizer for architecture students",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0"
+  }
+}
