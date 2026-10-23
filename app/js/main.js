@@ -36,7 +36,9 @@ function render() {
   document.getElementById("pageTitle").textContent = route.title;
   document.title = `${route.title} — Atelier`;
   document.querySelectorAll(".side__nav a").forEach((a) => a.classList.toggle("is-active", a.dataset.route === name));
-  document.querySelector(".side__nav a.is-active")?.scrollIntoView({ block: "nearest", inline: "center" });
+  document.querySelectorAll(".more-sheet a").forEach((a) => a.classList.toggle("is-active", a.dataset.route === name));
+  document.getElementById("moreBtn").classList.toggle("is-active", ["journal", "review", "inspiration"].includes(name));
+  closeMore();
   cleanup = route.render(view, params) || null;
   renderAlerts();
 }
@@ -140,6 +142,25 @@ function notifyDue() {
 }
 
 /* ---------- Shell buttons ---------- */
+
+const moreBtn = document.getElementById("moreBtn");
+const moreSheet = document.getElementById("moreSheet");
+function closeMore() {
+  moreSheet.hidden = true;
+  moreBtn.setAttribute("aria-expanded", "false");
+}
+moreBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  moreSheet.hidden = !moreSheet.hidden;
+  moreBtn.setAttribute("aria-expanded", String(!moreSheet.hidden));
+});
+document.addEventListener("click", (e) => {
+  if (!moreSheet.hidden && !moreSheet.contains(e.target)) closeMore();
+});
+moreSheet.querySelector("[data-open-settings]").addEventListener("click", () => {
+  closeMore();
+  document.getElementById("settingsBtn").click();
+});
 
 document.getElementById("quickNew").addEventListener("click", () => projectForm());
 

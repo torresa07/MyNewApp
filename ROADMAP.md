@@ -1,101 +1,117 @@
 # Atelier roadmap
 
-Each phase ends with a **quality check (QC) gate**. Nothing moves to the next phase until every box in its gate is ticked and you sign off.
+The plan is to make the app as useful as possible while everything is still saved on each device. **Accounts and the Supabase database come last, in Wave 4.**
 
-**How each phase is shipped:** work happens on a branch and opens a pull request. Netlify builds a **deploy preview** (a private test copy of the site) for every pull request, so you can try the phase before it goes live. When the QC gate passes, the pull request is merged to `main` and Netlify publishes it.
+Each wave ends with a **quality check (QC) gate**. Don't start the next wave until every box in the gate is ticked.
 
-**The same checks run in every gate:**
-- Automated browser tests pass (added in Phase 1).
-- A manual run-through on a phone and a laptop, in light and dark themes.
-- No errors in the browser console.
-- Lighthouse scores of 90 or more for Accessibility and Best Practices.
-- Your sign-off.
+**How to test each wave:** do the work on a branch and open a pull request. Netlify builds a private test copy of the site (a *deploy preview*) for each pull request. Check the wave there, then merge to `main` to publish it.
 
----
-
-## Phase 0: Themes and PDF import ✅ built
-
-- A theme button in the app's top bar and on the landing page, plus picture cards in *Settings & data*: **White**, **Soft paper** (the original look), **Dark** and **System**.
-- **System** follows the phone's or computer's own setting (Soft paper by day, Dark at night) and changes when that setting changes.
-- The choice is remembered and shared between the landing page and the app.
-- The dark theme is the same landscape palette at dusk: graphite, moss and clay. The deadline colours stay distinguishable.
-
-- **Import from PDF:** upload a syllabus or brief. AI finds the project details, deadlines, tasks, final-submission items and rules. You review and edit everything, then it becomes a new project or is added to an existing one. The PDF is kept with the project.
-
-**QC gate 0**
-- [ ] Import three real class PDFs (a syllabus, a project brief, an assignment sheet). Every real deadline is found, and nothing appears that isn't in the PDF.
-- [ ] Dates written as "Week 5" or without a year are highlighted and correct after you check them.
-- [ ] A second PDF added to the same project merges in without duplicating the project.
-- [ ] Every screen is readable in all three looks (White, Soft paper, Dark): Dashboard, Projects, Calendar (month and week), Journal, Mood board, Final submission, Review, Precedents and the landing page.
-- [ ] *System* switches automatically when you change your phone's appearance setting.
-- [ ] The page doesn't flash white when you open it in dark mode.
-- [ ] Pop-ups, date pickers and the deadline bell look right in both themes.
+**Every QC gate also includes:**
+- [ ] Phone (about 390px wide), tablet (768–1024px) and desktop (1280px+) all display correctly
+- [ ] The White, Soft paper and Dark themes all display correctly
+- [ ] No errors in the browser console
+- [ ] Lighthouse scores of 90+ for Accessibility and Best Practices
+- [ ] Your sign-off
 
 ---
 
-## Phase 1: Solid foundations
+## ✅ Done so far
 
-Make the app more reliable and nicer to use every day before adding big features.
+- [x] Landing page
+- [x] Dashboard, Projects, Calendar (month and week), deadline tracker and alerts
+- [x] Design journal and mood board
+- [x] Final submission checklist and Review tab (built-in review, plus AI crit)
+- [x] Precedent library
+- [x] Import from PDF: a syllabus or brief becomes a project with its deadlines, tasks and checklist
+- [x] Themes: White, Soft paper, Dark
+- [x] Layouts for every screen size: bottom tab bar on phones, icon rail on tablets, full sidebar on desktop
 
-- **Installable app (PWA):** "Add to Home Screen" on iPhone and Android, an app icon, and offline use.
-- **First-run welcome:** a short three-step tour, and a choice between starting blank or loading the sample projects.
-- **Edit everything:** edit mood board items, remove single images from journal entries, reorder checklist items, and duplicate a project.
-- **Accessibility pass:** colour contrast to the WCAG AA standard in both themes, full keyboard use, and screen-reader labels.
-- **Automated tests:** a browser test suite in the repo that runs on GitHub for every pull request. Later QC gates build on it.
-- **Confirm AI feedback on the live site**, including the error messages and what happens on a slow connection.
+**Do this now (no code needed):**
+- [ ] Add `ANTHROPIC_API_KEY` in Netlify and redeploy, so PDF import and AI crit work
+- [ ] Set a **monthly spending limit** in the Anthropic Console. Until logins exist (Wave 4), anyone who finds the site can use the AI features, and that's paid for on your account.
+
+---
+
+## Wave 1: Everyday essentials
+
+Make the app pleasant to use every day.
+
+- [ ] **Install as a phone app (PWA):** "Add to Home Screen", an app icon, and offline use
+- [ ] **Welcome tour** on first visit, with a choice of starting blank, loading the sample projects, or importing a PDF
+- [ ] **Quick add:** type "Sections pin-up Friday 9am" and it becomes a deadline with the right date
+- [ ] **Search** across projects, tasks, journal notes and precedents
+- [ ] **Edit everything:** edit mood board items, remove one image from a journal entry, duplicate a project, drag to reorder checklist items
+- [ ] **Subtasks** (e.g. "1:200 model" → base, massing, landscape, photos) and **repeating tasks** (e.g. weekly desk crit)
+- [ ] **Undo** after deleting something
+- [ ] **Automatic backup reminder:** a gentle nudge to download a backup every two weeks
+- [ ] **Accessibility pass:** colour contrast in all three themes, full keyboard use, screen-reader labels
+- [ ] **Automated tests** in the repo that run on GitHub for every pull request
 
 **QC gate 1**
-- [ ] The app installs on your phone and opens with no internet connection.
-- [ ] A brand-new visitor understands what to do within one minute (test with a classmate).
-- [ ] The automated tests pass on GitHub.
-- [ ] Lighthouse scores 90+ for Accessibility in both themes.
+- [ ] The app installs on your phone and opens with Wi-Fi turned off
+- [ ] A classmate who has never seen it creates a project and a deadline within 2 minutes, without help
+- [ ] Quick add gets the date right for "tomorrow", "Friday", "next Tuesday 2pm" and "Nov 12"
+- [ ] Every delete can be undone
+- [ ] The automated tests pass on GitHub
 
 ---
 
-## Phase 2: Accounts and sync
+## Wave 2: Smarter planning
 
-Today all data lives in one browser. This phase gives each student an account so their work follows them everywhere.
+Help students plan their time, not just list their deadlines.
 
-- Sign in with email or Google, using **Supabase** for login, the database and image storage.
-- The same projects on phone and laptop, with images stored in the cloud.
-- **Move existing data:** the first time someone signs in, the app offers to upload what is already saved in their browser.
-- **Privacy:** each student sees only their own data, enforced by database security rules. Account deletion and data export are included.
+- [ ] **Work-back plan:** pick a final date and the app spreads the remaining checklist items and tasks across the days left
+- [ ] **Time estimates** on tasks, plus a **weekly workload view** that warns about crunch weeks before they happen
+- [ ] **WhatsApp chat import:** upload an exported group chat. AI finds the deadlines and announcements, and you approve each one (uses the same review screen as PDF import).
+- [ ] **Photo import:** snap a whiteboard or a printed schedule and the deadlines are read from it
+- [ ] **Add to Google or Apple Calendar:** download deadlines as a calendar file
+- [ ] **Per-deadline reminders:** choose 1 day, 3 days or 1 week before
+- [ ] **Weekly summary:** what got done, what's next, what's at risk
 
 **QC gate 2**
-- [ ] A change made on your phone appears on your laptop.
-- [ ] Data saved before accounts existed moves over completely, images included.
-- [ ] Student A cannot see Student B's data, tested with two accounts.
-- [ ] Signing out and back in loses nothing.
+- [ ] The work-back plan for a real project looks doable (check it with a classmate)
+- [ ] A real exported studio chat, in both iPhone and Android formats, finds at least 80% of the real deadlines and adds nothing you didn't approve
+- [ ] A photo of a printed schedule is read correctly
+- [ ] The calendar file opens correctly in Google Calendar and Apple Calendar
 
 ---
 
-## Phase 3: Studio groups and WhatsApp import
+## Wave 3: Studio craft and presentation
 
-Turn the app from a personal tool into a shared studio space.
+Tools for the architecture work itself.
 
-- **Studios:** create a studio and invite classmates with a link. A "tutor" role can post official deadlines.
-- **Shared studio board:** everyone sees what's due and what's been announced. Studio deadlines appear in each member's calendar.
-- **WhatsApp chat import:** upload an exported chat. AI finds the dates, deadlines and announcements, and you approve which ones become tasks and notes.
-- **Comments:** classmates can leave comments on shared items.
+- [ ] **Board planner:** arrange drawings on an A1 or A0 grid and export a PDF for a test print
+- [ ] **Better AI crit:** feedback on each drawing, a check of board layout and legibility, and a history of past crits to show improvement
+- [ ] **Model-making log:** material and shopping list with costs, a laser-cut file checklist, and build-progress photos
+- [ ] **Draw on images:** sketch notes over uploaded drawings and model photos
+- [ ] **Project portfolio export:** the concept timeline, key images and final boards as one PDF
+- [ ] **Precedent collections** per project, with your own notes on each precedent
 
 **QC gate 3**
-- [ ] The invite link works and a classmate joins in under a minute.
-- [ ] A deadline posted by the tutor appears in every member's calendar.
-- [ ] Importing a real exported studio chat (iPhone and Android formats) finds at least 80% of the real deadlines, with nothing added without your approval.
-- [ ] Removing a member stops them seeing the studio.
+- [ ] The board planner PDF prints at the correct size (A1 or A0) with nothing cropped
+- [ ] A tutor reads AI feedback on three real boards and agrees it's specific and correct
+- [ ] Notes drawn on images still show after reloading the page
+- [ ] The portfolio PDF looks good enough to send to someone
 
 ---
 
-## Phase 4: Smarter crits and presentation tools
+## Wave 4: Accounts, database and sharing (Supabase)
 
-- **Better AI crit:** feedback per drawing, a check on the presentation board layout (hierarchy, legibility, story), and a history of past crits so students can see how they improved.
-- **Board planner:** arrange drawings on an A1 or A0 grid and export a PDF for a test print.
-- **Auto-schedule:** the app spreads the remaining checklist items over the days left before the final submission.
-- **Calendar export:** add deadlines to Google or Apple Calendar.
-- **Precedent collections per project**, which can go straight into the journal.
+Only now add logins. Everything above keeps working, and data moves into the cloud.
+
+- [ ] **Sign in** with an email link or Google (Supabase Auth)
+- [ ] **Database** for projects, tasks, deadlines, journal entries and checklists (Supabase Postgres), with security rules so each person sees only their own data
+- [ ] **Cloud storage** for images and PDFs (Supabase Storage)
+- [ ] **One-tap move:** the first time someone signs in, everything saved in their browser is uploaded to their account
+- [ ] **Sync across devices**, still working offline and catching up when back online
+- [ ] **AI features require a login**, with a fair-use limit per student, which ends the spending risk above
+- [ ] **Studio groups:** invite classmates with a link, a shared studio board, and a tutor role that can post deadlines to everyone
+- [ ] **Account deletion and full data export**
 
 **QC gate 4**
-- [ ] AI feedback names specific, correct things in three real student boards (a tutor checks it).
-- [ ] The exported PDF prints at the right size.
-- [ ] Deadlines appear in Google or Apple Calendar.
-- [ ] The full test suite passes, with no Lighthouse drop compared with Phase 3.
+- [ ] A change on your phone appears on your laptop within a few seconds
+- [ ] Browser data moves into a new account with nothing missing, images and PDFs included
+- [ ] Two test accounts can't see each other's data
+- [ ] Signed-out visitors can't use the AI features
+- [ ] A deadline posted by the tutor appears on every studio member's calendar
+- [ ] Deleting an account removes all of its data

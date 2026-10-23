@@ -1,5 +1,4 @@
-// Colour themes: White, Soft paper (the original look), Dark, or System
-// (Soft paper by day, Dark when the device is in dark mode).
+// Colour themes: White, Soft paper (the original look) or Dark.
 // Loaded in <head> (not deferred) so the page never flashes the wrong colours.
 // The choice is remembered per browser and shared by the landing page and app.
 (function () {
@@ -8,23 +7,19 @@
     { id: "white", label: "White", hint: "Clean white background", swatch: ["#ffffff", "#8f9f92"] },
     { id: "paper", label: "Soft paper", hint: "Warm, tracing-paper tones", swatch: ["#f6f3ed", "#a8b59a"] },
     { id: "dark", label: "Dark", hint: "Easy on the eyes at night", swatch: ["#1c1e1b", "#9db2a2"] },
-    { id: "system", label: "System", hint: "Follows your device", swatch: ["#f6f3ed", "#1c1e1b"] },
   ];
   var ICONS = {
     white: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
     paper: '<path d="M6 3h9l3 3v15H6z"/><path d="M15 3v3h3M9 11h6M9 15h6"/>',
     dark: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
-    system: '<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/>',
   };
-  var media = window.matchMedia("(prefers-color-scheme: dark)");
   var root = document.documentElement;
 
   function getPref() {
     var v = null;
     try { v = localStorage.getItem(KEY); } catch (e) {}
-    if (v === "light") return "paper"; // earlier versions saved "light"
     for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === v) return v;
-    return "system";
+    return "paper"; // default, and what older "light" / "system" choices become
   }
 
   function icon(id) {
@@ -33,9 +28,8 @@
 
   function apply() {
     var pref = getPref();
-    var mode = pref === "system" ? (media.matches ? "dark" : "paper") : pref;
     root.dataset.theme = pref;
-    root.dataset.mode = mode;
+    root.dataset.mode = pref;
     var opts = document.querySelectorAll("[data-theme-value]");
     for (var i = 0; i < opts.length; i++) {
       var on = opts[i].dataset.themeValue === pref;
@@ -82,7 +76,6 @@
   }
 
   apply();
-  media.addEventListener("change", apply);
   document.addEventListener("DOMContentLoaded", buildMenus);
 
   document.addEventListener("click", function (e) {

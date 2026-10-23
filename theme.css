@@ -25,7 +25,13 @@
 .theme-opt__text small { color: var(--ink-soft); font-size: .75rem; }
 
 /* Larger cards in Settings */
-.theme-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin: .4rem 0 1rem; }
+.theme-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: .4rem 0 1rem; }
 .theme-cards .theme-opt { border-color: var(--line, var(--line-soft)); padding: .7rem; }
 .theme-cards .theme-opt.is-current { border-color: var(--eucalyptus); box-shadow: 0 0 0 1px var(--eucalyptus); }
-@media (max-width: 420px) { .theme-cards { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .theme-cards { grid-template-columns: 1fr; } }
+
+/* On phones the menu spans the header instead of hanging off the button */
+@media (max-width: 600px) {
+  .theme-menu { position: static; }
+  .theme-menu__pop { left: 16px; right: 16px; width: auto; }
+}

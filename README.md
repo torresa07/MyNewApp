@@ -13,9 +13,10 @@ A studio organizer for architecture students.
   - **Review**: instant built-in review of what's missing and how to improve, plus optional AI feedback
   - **Precedents**: curated precedent library and trusted inspiration sites
 
-- **Themes**: White, Soft paper, Dark, or System (follows the device), from the theme button on every page or *Settings & data*
+- **Themes**: White, Soft paper or Dark, from the theme button on every page or *Settings & data*
+- **Responsive**: bottom tab bar on phones, icon rail on tablets, full sidebar on desktop
 
-See [ROADMAP.md](ROADMAP.md) for the phased plan.
+See [ROADMAP.md](ROADMAP.md) for the next four waves of improvements (accounts and Supabase in Wave 4).
 
 Everything a student adds is saved in their own browser (text in `localStorage`, images in IndexedDB). There is no account or database yet; *Settings & data* can download and restore a backup.
 
@@ -49,7 +50,7 @@ Then open <http://localhost:3000/app/>. (The AI feedback button needs `netlify d
 ## Files
 
 - `index.html`, `styles.css`, `main.js` — landing page
-- `theme.js`, `theme.css` — theme picker (White / Soft paper / Dark / System) shared by both pages
+- `theme.js`, `theme.css` — theme picker (White / Soft paper / Dark) shared by both pages
 - `app/` — the app (plain HTML/CSS/JS modules, no build step)
   - `app/js/views/` — one file per screen
   - `app/js/data/` — checklist template and precedent library

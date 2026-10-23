@@ -7,6 +7,8 @@ import { countdownHtml, startCountdown } from "./countdown.js";
 let mode = "month";
 let cursor = new Date();
 let typeFilter = new Set(Object.keys(DEADLINE_TYPES));
+let selectedDay = todayKey();
+const isPhone = () => window.matchMedia("(max-width: 600px)").matches;
 
 export function renderCalendar(root) {
   const events = allEvents().filter((e) => typeFilter.has(e.type));
@@ -47,6 +49,7 @@ export function renderCalendar(root) {
             </label>`).join("")}
         </div>
         ${mode === "month" ? monthGrid(byDay) : weekGrid(byDay)}
+        ${mode === "month" ? dayAgenda(byDay) : ""}
       </section>
 
       <aside class="cal-side">
@@ -74,10 +77,20 @@ export function renderCalendar(root) {
     renderCalendar(root);
   }));
   root.querySelectorAll("[data-day]").forEach((el) => el.addEventListener("click", (e) => {
-    if (e.target.closest("[data-event]")) return;
+    if (e.target.closest("[data-event]") && !isPhone()) return;
+    if (isPhone() && mode === "month") {
+      selectedDay = el.dataset.day;
+      renderCalendar(root);
+      root.querySelector(".day-agenda")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      return;
+    }
     deadlineForm("", null, el.dataset.day);
   }));
-  root.querySelectorAll("[data-event]").forEach((el) => el.addEventListener("click", () => openEvent(el.dataset.event)));
+  root.querySelectorAll("[data-event]").forEach((el) => el.addEventListener("click", () => {
+    if (isPhone() && mode === "month" && el.closest(".cal-cell")) return; // the day tap shows the agenda instead
+    openEvent(el.dataset.event);
+  }));
+  root.querySelector("[data-add-on]")?.addEventListener("click", (e) => deadlineForm("", null, e.currentTarget.dataset.addOn));
   root.querySelectorAll("[data-done]").forEach((el) => el.addEventListener("change", () => {
     const d = state.deadlines.find((x) => x.id === el.dataset.done);
     if (d) d.done = el.checked;
@@ -136,13 +149,26 @@ function monthGrid(byDay) {
     const items = byDay.get(key) || [];
     const other = day.getMonth() !== cursor.getMonth();
     cells += `
-      <div class="cal-cell ${other ? "is-other" : ""} ${key === today ? "is-today" : ""}" data-day="${key}" tabindex="0">
+      <div class="cal-cell ${other ? "is-other" : ""} ${key === today ? "is-today" : ""} ${key === selectedDay ? "is-selected" : ""}" data-day="${key}" tabindex="0">
         <span class="cal-cell__num">${day.getDate()}</span>
         <div class="cal-cell__events">${items.slice(0, 3).map(chip).join("")}${items.length > 3 ? `<span class="more">+${items.length - 3} more</span>` : ""}</div>
       </div>`;
     if (i === 34 && addDays(start, 35).getMonth() !== cursor.getMonth()) break;
   }
   return `<div class="cal-month"><div class="cal-head">${WEEKDAYS.map((d) => `<span>${d}</span>`).join("")}</div><div class="cal-grid">${cells}</div></div>`;
+}
+
+// Phones: the list of the tapped day's deadlines, under the month grid.
+function dayAgenda(byDay) {
+  const items = byDay.get(selectedDay) || [];
+  return `
+    <div class="day-agenda">
+      <div class="day-agenda__head">
+        <h3>${esc(fmtDate(selectedDay, { weekday: "long", month: "long", day: "numeric" }))}</h3>
+        <button type="button" class="btn btn--small btn--ghost" data-add-on="${selectedDay}">+ Add</button>
+      </div>
+      ${items.length ? `<div class="day-agenda__list">${items.map(chip).join("")}</div>` : `<p class="muted small">Nothing due this day.</p>`}
+    </div>`;
 }
 
 function weekGrid(byDay) {

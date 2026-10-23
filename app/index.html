@@ -21,14 +21,21 @@
         <span>Atelier</span>
       </a>
       <nav class="side__nav">
-        <a href="#/dashboard" data-route="dashboard"><span class="ico">◧</span><span>Dashboard</span></a>
-        <a href="#/projects" data-route="projects"><span class="ico">▤</span><span>Projects</span></a>
-        <a href="#/calendar" data-route="calendar"><span class="ico">▦</span><span>Calendar</span></a>
-        <a href="#/journal" data-route="journal"><span class="ico">✎</span><span>Journal</span></a>
-        <a href="#/checklist" data-route="checklist"><span class="ico">☑</span><span>Final submission</span></a>
-        <a href="#/review" data-route="review"><span class="ico">◎</span><span>Review</span></a>
-        <a href="#/inspiration" data-route="inspiration"><span class="ico">❖</span><span>Precedents</span></a>
+        <a href="#/dashboard" data-route="dashboard"><span class="ico" aria-hidden="true">◧</span><span class="lbl">Dashboard</span></a>
+        <a href="#/projects" data-route="projects"><span class="ico" aria-hidden="true">▤</span><span class="lbl">Projects</span></a>
+        <a href="#/calendar" data-route="calendar"><span class="ico" aria-hidden="true">▦</span><span class="lbl">Calendar</span></a>
+        <a href="#/checklist" data-route="checklist"><span class="ico" aria-hidden="true">☑</span><span class="lbl"><span class="lbl-long">Final submission</span><span class="lbl-short">Final</span></span></a>
+        <a href="#/journal" data-route="journal" data-more><span class="ico" aria-hidden="true">✎</span><span class="lbl">Journal</span></a>
+        <a href="#/review" data-route="review" data-more><span class="ico" aria-hidden="true">◎</span><span class="lbl">Review</span></a>
+        <a href="#/inspiration" data-route="inspiration" data-more><span class="ico" aria-hidden="true">❖</span><span class="lbl">Precedents</span></a>
+        <button type="button" class="more-btn" id="moreBtn" aria-haspopup="true" aria-expanded="false"><span class="ico" aria-hidden="true">⋯</span><span class="lbl">More</span></button>
       </nav>
+      <div class="more-sheet" id="moreSheet" hidden>
+        <a href="#/journal" data-route="journal"><span class="ico" aria-hidden="true">✎</span>Journal &amp; mood board</a>
+        <a href="#/review" data-route="review"><span class="ico" aria-hidden="true">◎</span>Review</a>
+        <a href="#/inspiration" data-route="inspiration"><span class="ico" aria-hidden="true">❖</span>Precedents</a>
+        <button type="button" data-open-settings><span class="ico" aria-hidden="true">⚙</span>Settings &amp; data</button>
+      </div>
       <div class="side__foot">
         <button class="link-btn" id="settingsBtn" type="button">Settings &amp; data</button>
       </div>
