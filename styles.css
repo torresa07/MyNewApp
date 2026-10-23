@@ -19,6 +19,15 @@
   color-scheme: light;
 }
 
+/* White theme: same accents on a clean white background */
+:root[data-mode="white"] {
+  --paper: #ffffff;
+  --linen: #f4f4f1;
+  --stone: #d9d9d4;
+  --line-soft: #e7e7e3;
+  --shadow-rgb: 40 40 38;
+}
+
 /* Dark theme: the same landscape palette at dusk */
 :root[data-mode="dark"] {
   --paper: #1c1e1b;
@@ -229,12 +238,5 @@ h3 { font-size: 1.5rem; font-weight: 500; }
   .features, .pins, .steps { grid-template-columns: 1fr; }
 }
 
-/* Theme switch */
 .nav__right { display: flex; align-items: center; gap: .8rem; }
-.theme-switch { display: inline-flex; background: var(--linen); border-radius: 30px; padding: 3px; gap: 2px; }
-.theme-switch button { width: 30px; height: 30px; border: 0; border-radius: 50%; background: none; cursor: pointer; display: grid; place-items: center; color: var(--ink-soft); }
-.theme-switch button:hover { color: var(--ink); }
-.theme-switch button[aria-pressed="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 2px 6px -3px rgb(var(--shadow-rgb) / .5); }
-.theme-switch svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.theme-switch button:focus-visible { outline: 2px solid var(--sage); outline-offset: 1px; }
 @media (max-width: 420px) { .nav__right .btn--small { padding: .6rem .7rem; } }

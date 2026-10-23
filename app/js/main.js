@@ -145,6 +145,8 @@ document.getElementById("quickNew").addEventListener("click", () => projectForm(
 
 document.getElementById("settingsBtn").addEventListener("click", () => {
   openModal("Settings & data", `
+    <h4>Appearance</h4>
+    ${window.atelierTheme ? window.atelierTheme.cardsHtml() : ""}
     <label class="field"><span>Alert me about deadlines this many days ahead</span>
       <input type="number" name="alertDays" min="1" max="30" value="${esc(state.settings.alertDays ?? 3)}" /></label>
     <p class="muted small">Everything you add is saved privately in this browser on this device.</p>
@@ -161,6 +163,7 @@ document.getElementById("settingsBtn").addEventListener("click", () => {
       save();
     },
   });
+  window.atelierTheme?.refresh();
   document.getElementById("exportData").onclick = () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
     const a = document.createElement("a");

@@ -2,6 +2,7 @@ import { state, save, activeProjects, projectProgress, upcoming, overdue, nextFi
 import { esc, todayKey, relDays, fmtDate, fmtTime, daysUntil, DEADLINE_TYPES, emptyState } from "../ui.js";
 import { projectForm, taskForm, projectName } from "../forms.js";
 import { countdownHtml, startCountdown } from "./countdown.js";
+import { openImport } from "../import.js";
 
 export function renderDashboard(root) {
   const projects = activeProjects();
@@ -32,6 +33,7 @@ export function renderDashboard(root) {
       </div>
       <div class="dash-head__actions">
         <button class="btn" id="dashNewProject" type="button">+ Create project</button>
+        <button class="btn btn--ghost" id="dashImport" type="button">⇪ Import PDF</button>
         <button class="btn btn--ghost" id="dashNewTask" type="button">+ Add task</button>
       </div>
     </section>
@@ -64,7 +66,7 @@ export function renderDashboard(root) {
       <section class="panel panel--wide">
         <div class="panel__head"><h2>Active projects</h2><a href="#/projects" class="link">View all</a></div>
         ${projects.length ? `<div class="project-cards">${projects.map(projectCard).join("")}</div>` :
-          emptyState("No projects yet", "Create your first studio project to get started.", `<button class="btn" data-new-project type="button">+ Create project</button>`)}
+          emptyState("No projects yet", "Upload your syllabus or project brief and Atelier will set everything up — or start from scratch.", `<div class="btn-group center"><button class="btn" data-import type="button">⇪ Import a PDF</button><button class="btn btn--ghost" data-new-project type="button">+ Create project</button></div>`)}
       </section>
     </div>
   `;
@@ -72,6 +74,8 @@ export function renderDashboard(root) {
   root.querySelector("#dashNewProject").onclick = () => projectForm();
   root.querySelector("#dashNewTask").onclick = () => taskForm(projects[0]?.id);
   root.querySelector("[data-new-project]")?.addEventListener("click", () => projectForm());
+  root.querySelector("#dashImport").onclick = () => openImport();
+  root.querySelector("[data-import]")?.addEventListener("click", () => openImport());
   root.querySelectorAll("[data-toggle-task]").forEach((el) =>
     el.addEventListener("change", () => {
       const t = state.tasks.find((x) => x.id === el.dataset.toggleTask);

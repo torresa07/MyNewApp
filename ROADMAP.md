@@ -13,15 +13,20 @@ Each phase ends with a **quality check (QC) gate**. Nothing moves to the next ph
 
 ---
 
-## Phase 0: Light, dark and system themes ✅ built
+## Phase 0: Themes and PDF import ✅ built
 
-- A three-way switch (☀ light, ☾ dark, 🖥 system) in the app's top bar and on the landing page.
-- **System** follows the phone's or computer's own setting and changes when that setting changes.
+- A theme button in the app's top bar and on the landing page, plus picture cards in *Settings & data*: **White**, **Soft paper** (the original look), **Dark** and **System**.
+- **System** follows the phone's or computer's own setting (Soft paper by day, Dark at night) and changes when that setting changes.
 - The choice is remembered and shared between the landing page and the app.
 - The dark theme is the same landscape palette at dusk: graphite, moss and clay. The deadline colours stay distinguishable.
 
+- **Import from PDF:** upload a syllabus or brief. AI finds the project details, deadlines, tasks, final-submission items and rules. You review and edit everything, then it becomes a new project or is added to an existing one. The PDF is kept with the project.
+
 **QC gate 0**
-- [ ] Every screen is readable in light and dark: Dashboard, Projects, Calendar (month and week), Journal, Mood board, Final submission, Review, Precedents and the landing page.
+- [ ] Import three real class PDFs (a syllabus, a project brief, an assignment sheet). Every real deadline is found, and nothing appears that isn't in the PDF.
+- [ ] Dates written as "Week 5" or without a year are highlighted and correct after you check them.
+- [ ] A second PDF added to the same project merges in without duplicating the project.
+- [ ] Every screen is readable in all three looks (White, Soft paper, Dark): Dashboard, Projects, Calendar (month and week), Journal, Mood board, Final submission, Review, Precedents and the landing page.
 - [ ] *System* switches automatically when you change your phone's appearance setting.
 - [ ] The page doesn't flash white when you open it in dark mode.
 - [ ] Pop-ups, date pickers and the deadline bell look right in both themes.

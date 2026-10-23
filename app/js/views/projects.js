@@ -2,6 +2,8 @@ import { state, save, getProject, projectProgress, checklistProgress, allEvents 
 import { esc, fmtDate, relDays, todayKey, emptyState, toast } from "../ui.js";
 import { projectForm, taskForm, deadlineForm } from "../forms.js";
 import { deadlineRow } from "./dashboard.js";
+import { openImport, describeDoc } from "../import.js";
+import { getImage, deleteImage } from "../images.js";
 
 let taskFilter = "all";
 
@@ -13,13 +15,17 @@ export function renderProjects(root, [id]) {
   root.innerHTML = `
     <div class="page-head">
       <p class="muted">All your studio projects. Click one to manage its tasks and deadlines.</p>
-      <button class="btn" id="newProject" type="button">+ New project</button>
+      <div class="btn-group">
+        <button class="btn" id="importPdf" type="button">⇪ Import from PDF</button>
+        <button class="btn btn--ghost" id="newProject" type="button">+ New project</button>
+      </div>
     </div>
     ${active.length ? `<div class="project-cards project-cards--grid">${active.map(card).join("")}</div>` :
-      emptyState("No active projects", "Create a project for each studio brief.", "")}
+      emptyState("No active projects", "Upload a syllabus or project brief and Atelier will set up the project for you — or start from scratch.", "")}
     ${archived.length ? `<h2 class="section-title">Archived</h2><div class="project-cards project-cards--grid is-archived">${archived.map(card).join("")}</div>` : ""}
   `;
   root.querySelector("#newProject").onclick = () => projectForm();
+  root.querySelector("#importPdf").onclick = () => openImport();
 }
 
 function card(p) {
@@ -69,7 +75,29 @@ function renderDetail(root, id) {
       <a href="#/checklist/${esc(id)}">☑ Final checklist</a>
       <a href="#/journal/${esc(id)}">✎ Journal &amp; mood board</a>
       <a href="#/review/${esc(id)}">◎ Review submission</a>
+      <button type="button" id="importInto">⇪ Import another PDF</button>
     </nav>
+
+    ${(p.requirements || []).length || (p.documents || []).length ? `
+    <div class="detail-grid">
+      <section class="panel">
+        <div class="panel__head"><h2>From the brief</h2></div>
+        ${(p.requirements || []).length ? `<ul class="brief-list">${p.requirements.map((r, i) => `
+          <li><span>${esc(r)}</span><button type="button" class="icon-btn icon-btn--sm" data-del-req="${i}" aria-label="Remove requirement">×</button></li>`).join("")}</ul>`
+          : `<p class="muted small">No requirements saved yet.</p>`}
+      </section>
+      <section class="panel">
+        <div class="panel__head"><h2>Class documents</h2></div>
+        ${(p.documents || []).length ? `<ul class="doc-list">${p.documents.map((d) => `
+          <li>
+            <span class="doc-list__icon">PDF</span>
+            <div class="doc-list__body"><strong>${esc(d.name)}</strong><span class="muted small">${esc(describeDoc(d))}</span></div>
+            <button type="button" class="link-btn" data-open-doc="${esc(d.id)}">Open</button>
+            <button type="button" class="link-btn" data-dl-doc="${esc(d.id)}">Download</button>
+            <button type="button" class="link-btn danger" data-del-doc="${esc(d.id)}">Remove</button>
+          </li>`).join("")}</ul>` : `<p class="muted small">PDFs you import are kept here.</p>`}
+      </section>
+    </div>` : ""}
 
     <div class="detail-grid">
       <section class="panel">
@@ -113,10 +141,42 @@ function renderDetail(root, id) {
     state.journal = state.journal.filter((x) => x.projectId !== id);
     state.mood = state.mood.filter((x) => x.projectId !== id);
     delete state.checklist[id];
+    (p.documents || []).forEach((d) => deleteImage(d.id));
     location.hash = "#/projects";
     save();
   };
   root.querySelector("#addTask").onclick = () => taskForm(id);
+  root.querySelector("#importInto").onclick = () => openImport(id);
+  root.querySelectorAll("[data-del-req]").forEach((b) => (b.onclick = () => {
+    p.requirements.splice(Number(b.dataset.delReq), 1);
+    save();
+  }));
+  root.querySelectorAll("[data-open-doc]").forEach((b) => (b.onclick = async () => {
+    const doc = p.documents.find((d) => d.id === b.dataset.openDoc);
+    const win = window.open("", "_blank");
+    const dataUrl = await getImage(doc.id);
+    if (!dataUrl) { win?.close(); return toast("This PDF isn't saved on this device."); }
+    const blob = await (await fetch(dataUrl)).blob();
+    const url = URL.createObjectURL(blob);
+    if (win) win.location = url;
+    else { const a = document.createElement("a"); a.href = url; a.download = doc.name; a.click(); }
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }));
+  root.querySelectorAll("[data-dl-doc]").forEach((b) => (b.onclick = async () => {
+    const doc = p.documents.find((d) => d.id === b.dataset.dlDoc);
+    const dataUrl = await getImage(doc.id);
+    if (!dataUrl) return toast("This PDF isn't saved on this device.");
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = doc.name;
+    a.click();
+  }));
+  root.querySelectorAll("[data-del-doc]").forEach((b) => (b.onclick = async () => {
+    if (!confirm("Remove this PDF from the project? Deadlines and tasks it created stay.")) return;
+    await deleteImage(b.dataset.delDoc);
+    p.documents = p.documents.filter((d) => d.id !== b.dataset.delDoc);
+    save();
+  }));
   root.querySelector("#addDeadline").onclick = () => deadlineForm(id);
   root.querySelectorAll("[data-filter]").forEach((b) => (b.onclick = () => { taskFilter = b.dataset.filter; renderDetail(root, id); }));
   root.querySelectorAll("[data-toggle]").forEach((el) => (el.onchange = () => {

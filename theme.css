@@ -1,0 +1,31 @@
+/* Theme picker, shared by the landing page and the app */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.theme-menu { position: relative; }
+.theme-menu__btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--stone); background: transparent;
+  color: var(--ink-soft); cursor: pointer; display: grid; place-items: center; padding: 0;
+}
+.theme-menu__btn:hover, .theme-menu__btn[aria-expanded="true"] { color: var(--ink); border-color: var(--ink); }
+.theme-menu__btn svg, .theme-opt svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.theme-menu__pop {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; width: 240px; padding: .5rem;
+  background: var(--surface, var(--paper)); border: 1px solid var(--line, var(--line-soft)); border-radius: 12px;
+  box-shadow: 0 24px 50px -24px rgb(var(--shadow-rgb) / .55);
+}
+.theme-menu__title { margin: .3rem .5rem .4rem; font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.theme-opt {
+  display: flex; align-items: center; gap: .75rem; width: 100%; padding: .55rem .6rem; border: 1px solid transparent;
+  border-radius: 8px; background: none; cursor: pointer; text-align: left; color: var(--ink); font: inherit;
+}
+.theme-opt:hover, .theme-opt:focus-visible { background: var(--linen); outline: none; }
+.theme-opt.is-current { border-color: var(--eucalyptus); background: var(--linen); }
+.theme-opt__sw { width: 30px; height: 30px; border-radius: 50%; flex: none; border: 1px solid var(--stone); }
+.theme-opt__text { display: flex; flex-direction: column; line-height: 1.3; }
+.theme-opt__text strong { font-weight: 500; font-size: .9rem; }
+.theme-opt__text small { color: var(--ink-soft); font-size: .75rem; }
+
+/* Larger cards in Settings */
+.theme-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin: .4rem 0 1rem; }
+.theme-cards .theme-opt { border-color: var(--line, var(--line-soft)); padding: .7rem; }
+.theme-cards .theme-opt.is-current { border-color: var(--eucalyptus); box-shadow: 0 0 0 1px var(--eucalyptus); }
+@media (max-width: 420px) { .theme-cards { grid-template-columns: 1fr; } }

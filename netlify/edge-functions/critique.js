@@ -3,6 +3,7 @@
 // Needs the ANTHROPIC_API_KEY environment variable set in Netlify.
 
 import Anthropic from "@anthropic-ai/sdk";
+import { json, getApiKey, MISSING_KEY, friendlyError } from "../lib/claude.js";
 
 const MAX_IMAGES = 4;
 const MAX_IMAGE_CHARS = 2_000_000; // base64 length, roughly 1.5 MB per image
@@ -23,17 +24,11 @@ Rules:
 - Keep bullets short. Use plain language a second-year student understands.
 - In "Priorities", give a numbered order of what to do first, sized to the time left before the final date.`;
 
-function json(status, body) {
-  return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
-}
-
 export default async (request) => {
   if (request.method !== "POST") return json(405, { error: "Use POST." });
 
-  const apiKey = globalThis.Netlify?.env.get("ANTHROPIC_API_KEY") ?? globalThis.process?.env?.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return json(500, { error: "AI feedback isn't set up yet: add an ANTHROPIC_API_KEY environment variable in your Netlify site settings, then redeploy." });
-  }
+  const apiKey = getApiKey();
+  if (!apiKey) return json(500, { error: MISSING_KEY });
 
   let payload;
   try {
@@ -94,13 +89,8 @@ export default async (request) => {
           controller.enqueue(encoder.encode("\n\n(Feedback was cut short — run it again for the rest.)"));
         }
       } catch (err) {
-        let message = "Something went wrong talking to the AI service. Please try again.";
-        if (err instanceof Anthropic.AuthenticationError) message = "The ANTHROPIC_API_KEY in Netlify isn't valid.";
-        else if (err instanceof Anthropic.RateLimitError) message = "Too many requests right now — wait a minute and try again.";
-        else if (err instanceof Anthropic.BadRequestError) message = "The AI service couldn't read this submission (an image may be too large or unsupported).";
-        else if (err instanceof Anthropic.APIError) message = `The AI service returned an error (${err.status}). Please try again.`;
         console.error(err);
-        controller.enqueue(encoder.encode(`\n\n${message}`));
+        controller.enqueue(encoder.encode(`\n\n${friendlyError(err)}`));
       } finally {
         controller.close();
       }
